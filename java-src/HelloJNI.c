@@ -39,12 +39,12 @@ Java_HelloJNI_fork (JNIEnv *env, jobject thisObj)
 
   if (0 == pid)
     {
-      printf ("I am the child!\n");
+      // printf ("I am the child!\n");
 
       return pid;
     }
 
-  printf ("I am the parent!\n");
+  // printf ("I am the parent!\n");
 
   return pid;
 }

@@ -1,3 +1,7 @@
+// need to ensure clojure jar is on CLASSPATH
+import clojure.lang.IFn;
+import clojure.java.api.Clojure;
+
 public class HelloJNI {
   static {
     System.loadLibrary("hello"); // Load native library hello.dll (Windows) or libhello.so (Unixes)
@@ -31,20 +35,33 @@ public class HelloJNI {
     System.out.println("All done?");
   }
 
-  public static int forkYea() {
+  public static void halt() {
+    Runtime.getRuntime().halt(0);
+  }
+
+  public static int forkYea(IFn f) {
     new HelloJNI().sayHello();  // Create an instance and invoke the native method
 
     // What will happen??
     int pid = new HelloJNI().fork();
     String answer;
 
+    // Child, do what we want (eval something?)
     if (0 == pid)
       {
         answer = new HelloJNI().addOne(2);
+        System.out.println("Child about to invoke...");
+        System.out.println(f.invoke());
+        System.out.println("Child invoked...");
+        HelloJNI.halt();
       }
     else
       {
         answer = new HelloJNI().addOne(5);
+        System.out.println("Parent about to invoke...");
+        System.out.println(f.invoke());
+        System.out.println("Parent invoked...");
+        HelloJNI.halt();
       }
 
     System.out.println(answer);

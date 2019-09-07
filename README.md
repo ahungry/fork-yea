@@ -7,3 +7,15 @@ An experiment with Clojure and JNI fork() via clojure-java-C interop.
 "parent"
 "child"
 ```
+
+```sh
+lein run
+Parent about to invoke...Child about to invoke...
+
+"clj: in callback"
+"clj: in callback"
+clj: callback-returnclj: callback-return
+
+Child invoked...
+Parent invoked...
+```
