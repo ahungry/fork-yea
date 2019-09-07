@@ -30,6 +30,28 @@ public class HelloJNI {
     System.out.println(answer);
     System.out.println("All done?");
   }
+
+  public static int forkYea() {
+    new HelloJNI().sayHello();  // Create an instance and invoke the native method
+
+    // What will happen??
+    int pid = new HelloJNI().fork();
+    String answer;
+
+    if (0 == pid)
+      {
+        answer = new HelloJNI().addOne(2);
+      }
+    else
+      {
+        answer = new HelloJNI().addOne(5);
+      }
+
+    System.out.println(answer);
+    System.out.println("All done?");
+
+    return pid;
+  }
 }
 
 // It actually works and presents the following output:
