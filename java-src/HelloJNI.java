@@ -66,20 +66,23 @@ public class HelloJNI {
         int cpid = new HelloJNI().getPid();
         HelloJNI.halt(cpid);
       }
-    else
-      {
-        answer = new HelloJNI().addOne(5);
-        System.out.println("Parent about to invoke...");
-        System.out.println(f.invoke());
-        System.out.println("Parent invoked...");
-        System.out.println("Parent sees child pid was: " + pid);
-        // HelloJNI.halt(pid);
-      }
-
-    System.out.println(answer);
-    System.out.println("All done?");
-
     return pid;
+
+    // else
+    //   {
+    //     // For now, we have no reason to invoke as parent....
+    //     // answer = new HelloJNI().addOne(5);
+    //     // System.out.println("Parent about to invoke...");
+    //     // System.out.println(f.invoke());
+    //     // System.out.println("Parent invoked...");
+    //     // System.out.println("Parent sees child pid was: " + pid);
+    //     // HelloJNI.halt(pid);
+    //   }
+
+    // System.out.println(answer);
+    // System.out.println("All done?");
+
+    // return pid;
   }
 }
 
