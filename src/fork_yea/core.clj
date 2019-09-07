@@ -18,8 +18,8 @@
 
 (defn -main [& args]
   ;; (with-fork (fn [] (prn "Greetings from a child!")) )
-  (HelloJNI/forkYea (fn [] (prn "clj: in callback") "clj: callback-return"))
-  (prn "Greetings from a parent!"))
+  (let [pid (HelloJNI/forkYea (fn [] (prn "clj: in callback") "clj: callback-return"))]
+    (prn pid)))
 
 ;; (defn xmain
 ;;   "I don't do a whole lot ... yet."

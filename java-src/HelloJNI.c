@@ -48,3 +48,10 @@ Java_HelloJNI_fork (JNIEnv *env, jobject thisObj)
 
   return pid;
 }
+
+JNIEXPORT jint
+JNICALL
+Java_HelloJNI_getPid (JNIEnv *env, jobject thisObj)
+{
+  return getpid ();
+}

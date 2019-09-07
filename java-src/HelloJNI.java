@@ -12,6 +12,7 @@ public class HelloJNI {
   // Declare an instance native method sayHello() which receives no parameter and returns void
   private native void sayHello();
   private native int fork();
+  private native int getPid();
   private native String addOne(int y);
 
   // Test Driver
@@ -35,8 +36,13 @@ public class HelloJNI {
     System.out.println("All done?");
   }
 
-  public static void halt() {
-    Runtime.getRuntime().halt(0);
+  public static void halt(int pid) {
+    try {
+      Process p = Runtime.getRuntime().exec("kill -9 " + pid);
+      Runtime.getRuntime().halt(0);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
   }
 
   public static int forkYea(IFn f) {
@@ -53,7 +59,12 @@ public class HelloJNI {
         System.out.println("Child about to invoke...");
         System.out.println(f.invoke());
         System.out.println("Child invoked...");
-        HelloJNI.halt();
+        // This is gonna be killed from parent shortly...
+        // HelloJNI.halt();
+
+        System.out.println("Child pid was: " + new HelloJNI().getPid());
+        int cpid = new HelloJNI().getPid();
+        HelloJNI.halt(cpid);
       }
     else
       {
@@ -61,7 +72,8 @@ public class HelloJNI {
         System.out.println("Parent about to invoke...");
         System.out.println(f.invoke());
         System.out.println("Parent invoked...");
-        HelloJNI.halt();
+        System.out.println("Parent sees child pid was: " + pid);
+        // HelloJNI.halt(pid);
       }
 
     System.out.println(answer);
