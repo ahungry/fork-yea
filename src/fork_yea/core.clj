@@ -50,8 +50,28 @@
      :body res}))
 
 (defn -main [& args]
+  (let [pid (HelloJNI/forkYea (fn [] "My result is here"))
+        file (str pid ".forkyea")]
+    ;; (Thread/sleep 100)
+    (prn "Looking for file: " file)
+    (Thread/sleep 500)
+    (while (not (.exists (clojure.java.io/file file)))
+      (prn "Waiting....")
+      (Thread/sleep 1000))
+    (prn (slurp file))
+    (clojure.java.io/delete-file file true)
+    )
   ;; (with-fork (fn [] (prn "Greetings from a child!")) )
-  (let [pid (HelloJNI/forkYea (fn [] (prn "clj: in callback") "clj: callback-return"))]
-    (prn pid))
-  (server/run-server app {:port 8083})
+  ;; (let [pid (HelloJNI/forkYea (fn [] (prn "clj: in callback") "clj: callback-return"))]
+  ;;   (if (= pid 0)
+  ;;     (do
+  ;;       (prn "Child is doing something...")
+  ;;       (prn "clj child result was: " (HelloJNI/getResult))
+  ;;       (HelloJNI/halt (HelloJNI/pid))
+  ;;       )
+  ;;     (do
+  ;;       (prn "Parent is doing something...")
+  ;;       ))
+  ;;   (prn pid))
+  ;; (server/run-server app {:port 8083})
   )

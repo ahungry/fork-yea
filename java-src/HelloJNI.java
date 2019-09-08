@@ -1,6 +1,9 @@
 // need to ensure clojure jar is on CLASSPATH
 import clojure.lang.IFn;
 import clojure.java.api.Clojure;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class HelloJNI {
   static {
@@ -45,6 +48,14 @@ public class HelloJNI {
     }
   }
 
+  public static void writeOut (String fileName, String result)
+    throws IOException {
+    BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+    System.out.println("About to write out the data.");
+    writer.write(result);
+    writer.close();
+  }
+
   public static int forkYea(IFn f) {
     new HelloJNI().sayHello();  // Create an instance and invoke the native method
 
@@ -55,15 +66,33 @@ public class HelloJNI {
     // Child, do what we want (eval something?)
     if (0 == pid)
       {
-        answer = new HelloJNI().addOne(2);
+        // answer = new HelloJNI().addOne(2);
         System.out.println("Child about to invoke...");
-        System.out.println(f.invoke());
-        System.out.println("Child invoked...");
+        // System.out.println(f.invoke());
+        String result = f.invoke().toString();
+        System.out.println("Done invoking the child" + result);
+        int cpid = new HelloJNI().getPid();
+        // String fileName = "/tmp/" + String.valueOf(cpid);
+        String fileName = String.valueOf(cpid + ".forkyea");
+        System.out.println("Make a file of this name: " + fileName);
+
+        // TODO: This means each call will require a single I/O
+        // We will want to change this to be a non disk bound later.
+        try {
+          HelloJNI.writeOut(fileName, result);
+        } catch (IOException ex) {
+          ex.printStackTrace();
+        }
+
+        // BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+        // writer.write(result);
+        // writer.close();
+
+        // System.out.println("Child invoked...");
         // This is gonna be killed from parent shortly...
         // HelloJNI.halt();
 
-        System.out.println("Child pid was: " + new HelloJNI().getPid());
-        int cpid = new HelloJNI().getPid();
+        // System.out.println("Child pid was: " + new HelloJNI().getPid());
         HelloJNI.halt(cpid);
       }
     return pid;
