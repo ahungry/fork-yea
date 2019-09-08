@@ -30,6 +30,10 @@
     (fn [] (with-out-str (eval x)))
     (fn [] (with-out-str (prn  x)))))
 
+(defn eval-leniently [xf]
+  (try (eval (read-string "Bla" ))
+       (catch Exception e "dnag")))
+
 (defn clj->html [file]
   (def request {:name "Jon Smith"})
   (clojure.string/replace
@@ -39,6 +43,17 @@
         (map #(%))
         (clojure.string/join ""))
    #"\n" " "))
+
+(def ^:dynamic x 5)
+(def ^:dynamic y 6)
+
+(with-bindings
+  {#'fork-yea.core/x 3 #'fork-yea.core/y 4}
+  (eval
+   (do
+     (def x 10)
+     (prn "hi")
+     (+ x y))))
 
 ;; TODO: Launch clj->html via HelloJNI/forkYea
 ;; Ultimately, the resultant evaluation string should be dumped to a file
@@ -50,14 +65,19 @@
      :body res}))
 
 (defn -main [& args]
+  (prn "Booting up")
+  (server/run-server app {:port 8080}))
+
+(defn x-main [& args]
   (let [pid (HelloJNI/forkYea (fn [] "My result is here"))
         file (str pid ".forkyea")]
     ;; (Thread/sleep 100)
     (prn "Looking for file: " file)
-    (Thread/sleep 500)
-    (while (not (.exists (clojure.java.io/file file)))
-      (prn "Waiting....")
-      (Thread/sleep 1000))
+    (Thread/sleep 1000)
+    (prn "Done with initial waiting..." file)
+    ;; (while (not (.exists (clojure.java.io/file file)))
+    ;;   (prn "Waiting....")
+    ;;   (Thread/sleep 1000))
     (prn (slurp file))
     (clojure.java.io/delete-file file true)
     )
