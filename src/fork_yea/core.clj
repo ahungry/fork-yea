@@ -64,20 +64,20 @@
      :headers {"Content-Type" "text/html"}
      :body res}))
 
-(defn -main [& args]
+(defn x-main [& args]
   (prn "Booting up")
   (server/run-server app {:port 8080}))
 
-(defn x-main [& args]
+(defn -main [& args]
   (let [pid (HelloJNI/forkYea (fn [] "My result is here"))
         file (str pid ".forkyea")]
     ;; (Thread/sleep 100)
     (prn "Looking for file: " file)
-    (Thread/sleep 1000)
+    (Thread/sleep 100)
     (prn "Done with initial waiting..." file)
-    ;; (while (not (.exists (clojure.java.io/file file)))
-    ;;   (prn "Waiting....")
-    ;;   (Thread/sleep 1000))
+    (while (not (.exists (clojure.java.io/file file)))
+      (prn "Waiting....")
+      (Thread/sleep 100))
     (prn (slurp file))
     (clojure.java.io/delete-file file true)
     )

@@ -53,6 +53,7 @@ public class HelloJNI {
     BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
     System.out.println("About to write out the data.");
     writer.write(result);
+    writer.flush();
     writer.close();
   }
 
@@ -69,6 +70,9 @@ public class HelloJNI {
         // answer = new HelloJNI().addOne(2);
         System.out.println("Child about to invoke...");
         // System.out.println(f.invoke());
+        // Problem point is invoking in the fork - something clojure side may be missing.
+        // String result = "Pretend its me, your output.";
+        // The call works whenever we recompile to main class...
         String result = f.invoke().toString();
         System.out.println("Done invoking the child" + result);
         int cpid = new HelloJNI().getPid();
