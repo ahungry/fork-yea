@@ -87,6 +87,8 @@
   (prn "Server is listening on " (or port 8080))
   (server/run-server app {:port (or port 8080)}))
 
+(defn my-custom-fn [] 555)
+
 (defn -main [& args]
   ;; Works
   ;; (prn (with-fork (fn [] (str args))))
@@ -94,8 +96,11 @@
   ;; Does not work
   ;; (prn (with-fork (fn [] (clj->html "src/fork_yea/page1.clj"))))
 
-  ;; Maybe will work if eval is ok
-  (prn (with-fork (fn [] "(+ 1 2 3)")))
+  ;; This will work also - calling into current ns...just eval problem?
+  (prn (with-fork (fn [] (my-custom-fn))))
+
+  ;; the blocker...
+  ;; (prn (with-fork (fn [] (eval (list + 1 2 3)))))
   )
 
 (defn y-main [& args]
