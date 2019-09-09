@@ -47,6 +47,21 @@
         (clojure.string/join ""))
    #"\n" " "))
 
+(defn with-fork
+  "Call some code in a forked process and retrieve the results.
+  This will *NOT* work in a lein process or interactive REPL, it only
+  seems to work while the code is executing from a lein uberjar."
+  [f]
+  (let [pid (HelloJNI/forkYea f)
+        file (str pid ".forkyea")]
+    (Thread/sleep 10)
+    (while (not (.exists (clojure.java.io/file file)))
+      (Thread/sleep 10))
+    (let [ret (slurp file)]
+      (prn "Found this ret value: " ret)
+      (clojure.java.io/delete-file file true)
+      ret)))
+
 (def ^:dynamic x 5)
 (def ^:dynamic y 6)
 
@@ -58,18 +73,19 @@
      (prn "hi")
      (+ x y))))
 
+;; Call with something like this: curl http://localhost:8080/src/fork_yea/page1.clj
 ;; TODO: Launch clj->html via HelloJNI/forkYea
 ;; Ultimately, the resultant evaluation string should be dumped to a file
 ;; by the forked pid, then watched/picked up by the parent pid (or redis or something)
 (defn app [req]
-  (let [res (clj->html (subs (:uri req) 1))]
+  (let [res (with-fork (fn [] (clj->html (subs (:uri req) 1))))]
     {:status  200
      :headers {"Content-Type" "text/html"}
      :body res}))
 
-(defn x-main [& args]
-  (prn "Booting up")
-  (server/run-server app {:port 8080}))
+(defn x-main [& [port]]
+  (prn "Server is listening on " (or port 8080))
+  (server/run-server app {:port (or port 8080)}))
 
 (defn -main [& args]
   (let [pid (HelloJNI/forkYea (fn [] "My result is here"))
