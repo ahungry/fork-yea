@@ -1,5 +1,6 @@
 // need to ensure clojure jar is on CLASSPATH
 import clojure.lang.IFn;
+import clojure.lang.RT;
 import clojure.java.api.Clojure;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -73,7 +74,23 @@ public class HelloJNI {
         // Problem point is invoking in the fork - something clojure side may be missing.
         // String result = "Pretend its me, your output.";
         // The call works whenever we recompile to main class...
-        String result = f.invoke().toString();
+        // String result = f.invoke().toString();
+
+        // Try to eval+read-string a serialized form I guess...
+        String formToEval = f.invoke().toString();
+        System.out.println(formToEval);
+
+        String result = RT.var("clojure.core", "eval")
+          .invoke(RT.var("clojure.core", "read-string")
+                  .invoke(formToEval)).toString();
+
+        System.out.println(" Result was : " + result);
+
+        // RT.var("clojure.core", "eval")
+        //   .invoke(
+        //           RT.var("clojure.core","read-string")
+        //           .invoke("(swap! my-ns/my-atom dissoc :a-key)"));
+
         System.out.println("Done invoking the child" + result);
         int cpid = new HelloJNI().getPid();
         // String fileName = "/tmp/" + String.valueOf(cpid);

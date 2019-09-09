@@ -88,6 +88,17 @@
   (server/run-server app {:port (or port 8080)}))
 
 (defn -main [& args]
+  ;; Works
+  ;; (prn (with-fork (fn [] (str args))))
+
+  ;; Does not work
+  ;; (prn (with-fork (fn [] (clj->html "src/fork_yea/page1.clj"))))
+
+  ;; Maybe will work if eval is ok
+  (prn (with-fork (fn [] "(+ 1 2 3)")))
+  )
+
+(defn y-main [& args]
   (let [pid (HelloJNI/forkYea (fn [] "My result is here"))
         file (str pid ".forkyea")]
     ;; (Thread/sleep 100)
