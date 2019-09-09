@@ -3,6 +3,7 @@ Hello world
 (defn greeting []
   "Thanks")
 
+(/ 1 0)
 (prn ("hhaah" / 1 0 ))
 (prn (greeting))
 

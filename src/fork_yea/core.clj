@@ -25,14 +25,17 @@
           (recur (conj forms form))
           forms)))))
 
+;; TODO: When we eval and hit the error, we should print it wrapped in some identifier.
+(defn eval-leniently
+  "Try to eval the form, if we can't, return in a string to call later."
+  [xf]
+  (try (eval xf)
+       (catch Exception e (prn "\n\n" e "\n\n"))))
+
 (defn wrap-symbol [x]
   (if (list? x)
-    (fn [] (with-out-str (eval x)))
+    (fn [] (with-out-str (eval-leniently x)))
     (fn [] (with-out-str (prn  x)))))
-
-(defn eval-leniently [xf]
-  (try (eval (read-string "Bla" ))
-       (catch Exception e "dnag")))
 
 (defn clj->html [file]
   (def request {:name "Jon Smith"})
