@@ -12,5 +12,9 @@
   :main ^:skip-aot fork-yea.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}}
-  :jvm-opts ["-Dfile.encoding=UTF8" "-Djava.library.path=./java-src"]
+  :jvm-opts ["-Dfile.encoding=UTF8"
+             "-Djava.library.path=./java-src"
+             "-Xmx256M"
+             "-Xms256M"
+             ]
   )

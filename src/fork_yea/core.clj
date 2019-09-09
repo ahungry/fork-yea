@@ -97,10 +97,13 @@
   ;; (prn (with-fork (fn [] (clj->html "src/fork_yea/page1.clj"))))
 
   ;; This will work also - calling into current ns...just eval problem?
-  (prn (with-fork (fn [] (my-custom-fn))))
+  ;; (prn (with-fork (fn [] (my-custom-fn))))
 
   ;; the blocker...
   ;; (prn (with-fork (fn [] (eval (list + 1 2 3)))))
+  ;; (prn (with-fork (fn [] (str (eval (list + 1 2 3))))))
+
+  (prn (with-fork (fn [] (str (list 1 2 3)))))
   )
 
 (defn y-main [& args]
